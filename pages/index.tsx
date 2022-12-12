@@ -1,3 +1,10 @@
+import Layout from "../components/Layout";
+import Link from "next/link";
+
 export default function Home() {
-  return <div>Hi</div>;
+  return (
+    <Layout>
+      <Link href="/login">Login</Link>
+    </Layout>
+  );
 }
