@@ -60,7 +60,7 @@ export default async function handler(
     }
 
     // Send verification email
-    const verificationResponse = await fetch(
+    await fetch(
       `${process.env.POCKETBASE_URL}/api/collections/users/request-verification`,
       {
         method: "POST",
