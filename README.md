@@ -1,12 +1,57 @@
+<h1 align="center">
+  <img src="public/logo.png" width="128" height="128" alt="CronK8s Logo">
+  <br />
+  <tt>CronK8s</tt>
+</h1>
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
+### Setting up pocketbase
+
+First, you need pocketbase set up:
+
+```bash
+./init
+```
+
+This will install the latest version of [pocketbase](https://pocketbase.io).
+
+Next you will need to update pocketbase's database schema. You can do this using the built-in `migrate` feature:
+
+```bash
+./pocketbase migrate
+```
+
+Once pocketbase is ready you can start it with:
+
+```bash
+./pocketbase serve
+```
+
+### Setting up your environment
+
+Once pocketbase is running you can visit http://localhost:8090/_/ to visit the pocketbase admin UI. When you first load the UI you will be presented with a screen to create your admin account, go ahead and do this. You can either create another admin user from the pocketbase admin UI, or use the credentials you just signed up with:
+
+```bash
+cp .env .env.local
+```
+
+Now update the variables in `.env.local`
+
+```bash
+POCKETBASE_ADMIN_USER={admin_email_address}
+POCKETBASE_ADMIN_PASSWORD={admin_password}
+```
+
+## Development
+
+In a separate terminal you can start NextJS
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
