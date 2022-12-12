@@ -29,7 +29,7 @@ const Header = () => {
       <Row>
         <Col span={18}>
           <Image
-            src="/logo.svg"
+            src="/images/logo.svg"
             alt="logo"
             width={100}
             height={50}

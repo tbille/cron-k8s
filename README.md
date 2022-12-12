@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="public/logo.png" width="128" height="128" alt="CronK8s Logo">
+  <img src="public/images/logo.png" width="128" height="128" alt="CronK8s Logo">
   <br />
   <tt>CronK8s</tt>
 </h1>
