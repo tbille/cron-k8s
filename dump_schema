@@ -1,0 +1,31 @@
+#!/bin/bash
+
+sqlite=$(which sqlite3)
+datetime=$(date +%Y%m%d%H%M%S)
+
+function greenText {
+    echo -e "\e[32m$1\e[0m"
+}
+
+function redText {
+    echo -e "\e[31m$1\e[0m"
+}
+
+if [[ -z "${sqlite}" ]]; then
+    echo " "
+    echo -e "$(redText "✕") sqlite3 not found"
+    echo " "
+    echo "Please install sqlite3:"
+    echo "   apt install sqlite3"
+    exit 1;
+fi
+
+echo "Using ${sqlite} to dump schema to 'schema-${datetime}.sql'"
+sqlite3 pb_data/data.db .schema > "schema-${datetime}".sql
+
+echo " "
+echo -e "$(greenText "✓") Schema dumped."
+echo " "
+echo "To create the database, run:"
+echo "   sqlite3 pb_data/data.db < schema-${datetime}.sql"
+

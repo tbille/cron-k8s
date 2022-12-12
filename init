@@ -1,0 +1,23 @@
+#!/bin/bash
+
+json=$(curl --silent "https://api.github.com/repos/pocketbase/pocketbase/releases/latest")
+VERSION=$(echo "$json" | jq -r 'if .prerelease == false then .tag_name else null end')
+# remove first character
+VERSION=${VERSION:1}
+
+CURRENT_VERSION=$(./pocketbase --version | awk '{print $3}')
+
+if [ "$VERSION" == "$CURRENT_VERSION" ]; then
+  echo "Pocketbase is already up to date"
+  exit 0
+fi
+
+echo "Updating Pocketbase from ${CURRENT_VERSION} to version ${VERSION}"
+
+# Get pocketbase
+echo "Fetching pocketbase ${VERSION}"
+wget "https://github.com/pocketbase/pocketbase/releases/download/v${VERSION}/pocketbase_${VERSION}_linux_amd64.zip"
+echo "Extracting pocketbase"
+unzip "pocketbase_${VERSION}_linux_amd64.zip"
+echo "Cleaning up"
+rm "pocketbase_${VERSION}_linux_amd64.zip"
