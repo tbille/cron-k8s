@@ -1,5 +1,7 @@
-import { Typography, Button, Table, Alert, Progress } from "antd";
+import { Typography, Button, Table, Alert, Progress, Switch } from "antd";
 import type { ColumnsType } from "antd/es/table";
+
+import useSWR from "swr";
 
 import { useRecoilValue } from "recoil";
 import { userState } from "../state/user";
@@ -8,15 +10,43 @@ import Layout from "../components/Layout";
 
 const { Title } = Typography;
 
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  return res.json();
+};
+
 const Dashboard = () => {
   const user = useRecoilValue(userState);
-  const data = [];
+  const { data, error } = useSWR("/api/jobs", fetcher);
 
   const columns: ColumnsType = [
+    {
+      title: "Enabled",
+      dataIndex: "enabled",
+      key: "enabled",
+      render: (enabled: boolean) => (
+        <Switch checked={enabled} disabled={true} />
+      ),
+    },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Schedule",
+      dataIndex: "schedule",
+      key: "schedule",
+    },
+    {
+      title: "Webook",
+      dataIndex: "webhook_url",
+      key: "webhook_url",
+    },
+    {
+      title: "Query",
+      dataIndex: "sql_query",
+      key: "sql_query",
     },
   ];
 
@@ -44,7 +74,7 @@ const Dashboard = () => {
             <Button type="primary">Create job</Button>
           </Title>
         </div>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={data.items} />
       </>
     </Layout>
   );

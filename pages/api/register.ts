@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Pocketbase from "pocketbase";
 import type IUser from "../../types/user";
-import { getUserInfo } from "../../helpers/auth";
+import { getUserInfo, getAdminToken } from "../../helpers/auth";
 
 import Cookies from "cookies";
 
@@ -26,12 +26,7 @@ export default async function handler(
   const pocketbase = new Pocketbase(process.env.POCKETBASE_URL);
 
   try {
-    const admin = await pocketbase.admins.authWithPassword(
-      process.env.POCKETBASE_ADMIN_USER,
-      process.env.POCKETBASE_ADMIN_PASSWORD
-    );
-    const adminToken = admin.token;
-
+    const adminToken = await getAdminToken();
     const response = await fetch(
       `${process.env.POCKETBASE_URL}/api/collections/users/records`,
       {
