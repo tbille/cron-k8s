@@ -11,33 +11,37 @@ interface BaseError<ErrorData> {
   message: string;
 }
 
+export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
+  const cookies = new Cookies(req, res);
+  const token = cookies.get("token");
+  const response = await fetch(
+    `${process.env.POCKETBASE_URL}/api/collections/users/auth-refresh`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    }
+  );
+
+  const user = await response.json();
+
+  cookies.set(
+    "token",
+    user.token,
+    process.env.ENVIROMENT === "production" ? { secure: true } : {}
+  );
+
+  return user;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IUser | BaseError<null>>
 ) {
-  //const pocketbase = new PocketBase(process.env.POCKETBASE_URL);
-  const cookies = new Cookies(req, res);
-  const token = cookies.get("token");
-
   try {
-    const response = await fetch(
-      `${process.env.POCKETBASE_URL}/api/collections/users/auth-refresh`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      }
-    );
-
-    const user = await response.json();
-
-    cookies.set(
-      "token",
-      user.token,
-      process.env.ENVIROMENT === "production" ? { secure: true } : {}
-    );
+    const user = await getUser(req, res);
     return res.status(200).json(getUserInfo(user.record));
   } catch (error) {
     return res.status(error.status ?? 500).json({ ...error.data });

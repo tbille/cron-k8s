@@ -1,4 +1,5 @@
 import type IUser from "../types/user";
+import Pocketbase from "pocketbase";
 
 export const getUserInfo = (record: any): IUser => {
   return {
@@ -10,4 +11,14 @@ export const getUserInfo = (record: any): IUser => {
     username: record.username,
     verified: record.verified,
   };
+};
+
+export const getAdminToken = async (): string => {
+  const pocketbase = new Pocketbase(process.env.POCKETBASE_URL);
+
+  const admin = await pocketbase.admins.authWithPassword(
+    process.env.POCKETBASE_ADMIN_USER,
+    process.env.POCKETBASE_ADMIN_PASSWORD
+  );
+  return admin.token;
 };
