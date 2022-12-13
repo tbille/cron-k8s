@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ CRONJOB_NAME }}
+  namespace: cronjobs
+
+spec:
+  schedule: "{{ CRONJOB_SCHEDULE }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cronk8s
+            image: busybox:latest
+            command:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+            env:
+              - name: POCKETBASE_ADMIN_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+                    name: pocketbase-admin
+              - name: POCKETBASE_ADMIN_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: pocketbase-admin
+          restartPolicy: OnFailure
